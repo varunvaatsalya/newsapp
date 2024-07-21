@@ -52,7 +52,12 @@ export class News extends Component {
             const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=d093053d72bc40248998159804e0e67d&page=${this.state.page}&pageSize=${this.props.pageSize}`;
             this.setState({ loading: true });
     
-            let response = await fetch(url);
+            // let response = await fetch(url);
+            let response = await fetch(url, {
+                headers: {
+                    'Upgrade': 'HTTP/2.0'
+                }
+            });
             this.props.setProgress(30);
     
             if (!response.ok) {
