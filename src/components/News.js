@@ -30,22 +30,51 @@ export class News extends Component {
         document.title = `${this.capitalizeFirstLetter(this.props.category)} - NewsMonkey`;
     }
 
-    async updateNews() {
-        this.props.setProgress(10);
-        const url = `https://cors-anywhere.herokuapp.com/https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=d093053d72bc40248998159804e0e67d&page=${this.state.page}&pageSize=${this.props.pageSize}`;
-        this.setState({ loading: true });
-        let data = await fetch(url);
-        this.props.setProgress(30);
-        let parsedData = await data.json()
-        this.props.setProgress(70);
-        this.setState({
-            articles: parsedData.articles,
-            totalResults: parsedData.totalResults,
-            loading: false, 
-        })
-        this.props.setProgress(100);
+    // async updateNews() {
+    //     this.props.setProgress(10);
+    //     const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=d093053d72bc40248998159804e0e67d&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+    //     this.setState({ loading: true });
+    //     let data = await fetch(url);
+    //     this.props.setProgress(30);
+    //     let parsedData = await data.json()
+    //     this.props.setProgress(70);
+    //     this.setState({
+    //         articles: parsedData.articles,
+    //         totalResults: parsedData.totalResults,
+    //         loading: false, 
+    //     })
+    //     this.props.setProgress(100);
 
+    // }
+    async updateNews() {
+        try {
+            this.props.setProgress(10);
+            const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=d093053d72bc40248998159804e0e67d&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+            this.setState({ loading: true });
+    
+            let response = await fetch(url);
+            this.props.setProgress(30);
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
+            let parsedData = await response.json();
+            this.props.setProgress(70);
+    
+            this.setState({
+                articles: parsedData.articles,
+                totalResults: parsedData.totalResults,
+                loading: false,
+            });
+            this.props.setProgress(100);
+        } catch (error) {
+            console.error('There has been a problem with your fetch operation:', error);
+            this.setState({ loading: false });
+            this.props.setProgress(100);
+        }
     }
+    
     async componentDidMount() {
         this.updateNews();
     }
@@ -62,7 +91,7 @@ export class News extends Component {
 
     fetchMoreData = async () => {  
         this.setState({page: this.state.page + 1})
-        const url = `https://cors-anywhere.herokuapp.com/https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=d093053d72bc40248998159804e0e67d&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+        const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=d093053d72bc40248998159804e0e67d&page=${this.state.page}&pageSize=${this.props.pageSize}`;
         let data = await fetch(url);
         let parsedData = await data.json()
         this.setState({
