@@ -49,10 +49,13 @@ export class News extends Component {
     async updateNews() {
         try {
             this.props.setProgress(10);
-            const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=d093053d72bc40248998159804e0e67d&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+            let {country,category,pageSize}=this.props;
+            let page = this.state.page;
+            const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=d093053d72bc40248998159804e0e67d&page=${page}&pageSize=${pageSize}`;
             this.setState({ loading: true });
     
             let response = await fetch(url);
+
             this.props.setProgress(30);
     
             if (!response.ok) {
@@ -69,7 +72,7 @@ export class News extends Component {
             });
             this.props.setProgress(100);
         } catch (error) {
-            console.error('There has been a problem with your fetch operation:', error);
+            // console.error('There has been a problem with your fetch operation:', error);
             this.setState({ loading: false });
             this.props.setProgress(100);
         }
